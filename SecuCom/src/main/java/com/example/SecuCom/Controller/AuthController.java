@@ -12,6 +12,8 @@ import com.example.SecuCom.repository.RoleRepository;
 import com.example.SecuCom.repository.UserRepository;
 import com.example.SecuCom.security.jwt.JwtUtils;
 import com.example.SecuCom.security.services.UserDetailsImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,6 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,6 +36,10 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+
+
+  private static final Logger log = LoggerFactory.getLogger(AuthController.class);
+
   @Autowired
   AuthenticationManager authenticationManager;
 
@@ -61,7 +68,9 @@ public class AuthController {
     List<String> roles = userDetails.getAuthorities().stream()
         .map(item -> item.getAuthority())
         .collect(Collectors.toList());
-
+    log.info("La Methode pour se connecter");
+    LocalDateTime localDateTime = LocalDateTime.now();
+    log.info("Welcome home Page " + localDateTime);
     return ResponseEntity.ok(new JwtResponse(jwt,
                          userDetails.getId(), 
                          userDetails.getUsername(),
@@ -120,7 +129,9 @@ public class AuthController {
 
     user.setRoles(roles);
     userRepository.save(user);
-
+    log.info("La Methode pour inscription");
+    LocalDateTime localDateTime = LocalDateTime.now();
+    log.info("Welcome home Page " + localDateTime);
     return ResponseEntity.ok(new MessageResponse("Utilisateur ajouter avec succès!"));
   }
 
